@@ -45,8 +45,7 @@
 </div>
 
 <script>
-  const songsData = {
-    "StrayKidsSongs2018": [
+  const allSongs = [
       {
         "title": "District 9",
         "releaseDate": "2018-03-26",
@@ -54,24 +53,144 @@
         "album": "I Am NOT",
         "lyricCreator": "3RACHA"
       },
+      {
+        "title": "4419",
+        "releaseDate": "2018",
+        "performingArtists": ["Stray Kids"],
+        "album": "Mixtape",
+        "lyricCreator": "Bang Chan, Changbin, Han, Seungmin, Hyunjin"
+      },
+      {
+        "title": "My Pace",
+        "releaseDate": "2018-08-06",
+        "performingArtists": ["Stray Kids"],
+        "album": "I Am WHO",
+        "lyricCreator": "3RACHA"
+      },
+      {
+        "title": "Voices",
+        "releaseDate": "2018-08-06",
+        "performingArtists": ["Stray Kids"],
+        "album": "I Am WHO",
+        "lyricCreator": "3RACHA"
+      },
+      {
+        "title": "I Am YOU",
+        "releaseDate": "2018-10-22",
+        "performingArtists": ["Stray Kids"],
+        "album": "I Am YOU",
+        "lyricCreator": "3RACHA"
+      },
+      {
+        "title": "Get Cool",
+        "releaseDate": "2018-10-22",
+        "performingArtists": ["Stray Kids"],
+        "album": "I Am YOU",
+        "lyricCreator": "Bang Chan, Changbin, Han, Lee Know, Felix"
+      },
+      {
+        "title": "Miroh",
+        "releaseDate": "2019-03-25",
+        "performingArtists": ["Stray Kids"],
+        "album": "Clé 1: Miroh",
+        "lyricCreator": "3RACHA"
+      },
+      {
+        "title": "Side Effects",
+        "releaseDate": "2019-06-19",
+        "performingArtists": ["Stray Kids"],
+        "album": "Clé 2: Yellow Wood",
+        "lyricCreator": "3RACHA"
+      },
+      {
+        "title": "Double Knot",
+        "releaseDate": "2019-10-09",
+        "performingArtists": ["Stray Kids"],
+        "album": "Clé: Levanter",
+        "lyricCreator": "3RACHA"
+      },
+      {
+        "title": "Levanter",
+        "releaseDate": "2019-12-09",
+        "performingArtists": ["Stray Kids"],
+        "album": "Clé: Levanter",
+        "lyricCreator": "3RACHA"
+      },      
       // Add other songs
-    ]
-  };
+  ];
+  const songsLeft = [...allSongs];
 
   let currentQuestion = 0;
+  const totalQuestions = 5;
   let score = 0;
+
+  function getFeedback(score, totalQuestions) {
+    const percentage = (score / totalQuestions) * 100;
+
+    if (percentage < 50) {
+      return getRandomItem(feedback.badScore);
+    } else if (percentage >= 50 && percentage < 80) {
+      return getRandomItem(feedback.averageScore);
+    } else {
+      return getRandomItem(feedback.goodScore);
+    }
+  }
+
+  function getRandomItem(array) {
+    const randomIndex = Math.floor(Math.random() * array.length);
+    return array[randomIndex];
+  }
+
+  const feedback = {
+    "badScore": [
+      "Well, at least you've heard of Stray Kids, right?",
+      "Maybe you were thinking about another kind of mixtape?",
+      "Let's just say you're more of a casual listener."
+    ],
+    "averageScore": [
+      "Not bad, not great. You're in the middle, just like those catchy Stray Kids beats.",
+      "You're on the right track, but maybe you need a little more 'District 9' knowledge.",
+      "Your score is like a B-side track—decent, but not stealing the show."
+    ],
+    "goodScore": [
+      "Impressive! You're more than just a casual listener. Are you sure you're not part of 3RACHA?",
+      "Your Stray Kids knowledge is shining bright, just like their stage presence.",
+      "Bravo! You've proven that you're a true Stay. The members would be proud."
+    ]
+  };  
+
+  function getOptions(albums, count) {
+    const options = [];
+    while (options.length < count) {
+      const randomItem = getRandomItem(albums);
+      if (!options.includes(randomItem)) {
+        options.push(randomItem);
+      }
+    }
+    return options;
+  }
 
   function displayQuestion() {
     const questionElement = document.getElementById('question');
     const optionsElement = document.getElementById('options');
+    const allAlbums = [];
+    allSongs.forEach((song) => {
+      allAlbums.push(song.album);
+    });
     
-    if (currentQuestion < songsData.StrayKidsSongs2018.length) {
-      const currentSong = songsData.StrayKidsSongs2018[currentQuestion];
+    if (currentQuestion < totalQuestions) {
+      const questionIndex = Math.floor(Math.random() * songsLeft.length);
+      const currentSong = songsLeft.splice(questionIndex, 1)[0];
+      const options = getOptions(allAlbums, 4);
+      if (!options.includes(currentSong.album)) {
+        const randomIndex = Math.floor(Math.random() * options.length);
+        options[randomIndex] = currentSong.album;
+      }
 
       questionElement.textContent = `Which album features the song "${currentSong.title}"?`;
 
       optionsElement.innerHTML = '';
-      currentSong.albums.forEach((album) => {
+      options.forEach((album) => {
         const optionButton = document.createElement('button');
         optionButton.textContent = album;
         optionButton.classList.add('option');
@@ -79,14 +198,15 @@
         optionsElement.appendChild(optionButton);
       });
     } else {
-      questionElement.textContent = `Quiz completed! Your score is ${score} out of ${songsData.StrayKidsSongs2018.length}.`;
+      const cheekyResponse = getFeedback(score, totalQuestions);
+      questionElement.textContent = `Quiz completed! Your score is ${score} out of ${totalQuestions}. ${cheekyResponse}`;
       optionsElement.innerHTML = '';
     }
   }
 
   function checkAnswer(selectedAlbum) {
-    const currentSong = songsData.StrayKidsSongs2018[currentQuestion];
-    if (currentSong.albums.includes(selectedAlbum)) {
+    const currentSong = allSongs[currentQuestion];
+    if (currentSong.album == selectedAlbum) {
       score++;
     }
 
