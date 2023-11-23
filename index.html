@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stray Kids Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    #quiz-container {
+      margin: 50px;
+    }
+
+    #question {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    #options {
+      display: flex;
+      justify-content: center;
+    }
+
+    .option {
+      margin: 0 10px;
+      padding: 10px;
+      cursor: pointer;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="quiz-container">
+  <h1>Stray Kids Song Quiz</h1>
+  <div id="question"></div>
+  <div id="options"></div>
+</div>
+
+<script>
+  const songsData = {
+    "StrayKidsSongs2018": [
+      {
+        "title": "District 9",
+        "releaseDate": "2018-03-26",
+        "performingArtists": ["Stray Kids"],
+        "album": "I Am NOT",
+        "lyricCreator": "3RACHA"
+      },
+      // Add other songs
+    ]
+  };
+
+  let currentQuestion = 0;
+  let score = 0;
+
+  function displayQuestion() {
+    const questionElement = document.getElementById('question');
+    const optionsElement = document.getElementById('options');
+    
+    if (currentQuestion < songsData.StrayKidsSongs2018.length) {
+      const currentSong = songsData.StrayKidsSongs2018[currentQuestion];
+
+      questionElement.textContent = `Which album features the song "${currentSong.title}"?`;
+
+      optionsElement.innerHTML = '';
+      currentSong.albums.forEach((album) => {
+        const optionButton = document.createElement('button');
+        optionButton.textContent = album;
+        optionButton.classList.add('option');
+        optionButton.addEventListener('click', () => checkAnswer(album));
+        optionsElement.appendChild(optionButton);
+      });
+    } else {
+      questionElement.textContent = `Quiz completed! Your score is ${score} out of ${songsData.StrayKidsSongs2018.length}.`;
+      optionsElement.innerHTML = '';
+    }
+  }
+
+  function checkAnswer(selectedAlbum) {
+    const currentSong = songsData.StrayKidsSongs2018[currentQuestion];
+    if (currentSong.albums.includes(selectedAlbum)) {
+      score++;
+    }
+
+    currentQuestion++;
+    displayQuestion();
+  }
+
+  displayQuestion();
+</script>
+
+</body>
+</html>
